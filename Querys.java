@@ -1,12 +1,8 @@
 package model;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import javax.swing.JOptionPane;
 import controler.Logica;
-
-/**Esta clase se encarga de ejcutar todas las posibles consultas con una base de datos y convertir las consultas en array*/
 public class Querys 
 	{	
 		private String nameDataBase;
@@ -18,7 +14,7 @@ public class Querys
 		
 		public Querys()
 			{
-				nameDataBase="TonyK6.db";
+				nameDataBase="TonyK6.db";//Nombre de la base de datos
 				base= new BaseDeDatos();
 				precios=new ArrayList<Precio>();
 				c=null;
@@ -91,8 +87,6 @@ public class Querys
 			catch(SQLException g){g.printStackTrace();}//Fin del catch
 		
 		}//Fin del metodo showTablaPrecios
-		
-
 		public static void main(String[] args) 
 			{
 				Querys app=new Querys();
