@@ -17,7 +17,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 /** Esta clase es la encargada de gestionar los reportes pdf*/
 public class Bunker 
 	{
-		public static final String ruta="C:\\Documents and Settings\\daruedar\\workspace\\sparta.pdf";
+		//public static final String ruta="C:\\Documents and Settings\\daruedar\\workspace\\sparta.pdf";
 		public static final String ruta2="C:\\Documents and Settings\\daruedar\\Escritorio\\listPrecios.pdf";
 		public static void main(String[] args)throws DocumentException, IOException 
 			{
