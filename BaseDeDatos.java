@@ -11,7 +11,7 @@ public final class BaseDeDatos
 				catch (ClassNotFoundException e) 
 					{
 						e.printStackTrace();//Esto se ejecuta si hay un error con el driver de la base de datos.
-						JOptionPane.showMessageDialog(null, "Se produjo un error con el driver, revisar La  BaseDeDatos.class");
+						JOptionPane.showMessageDialog(null, "Se produjo un error con el driver, revisar La  BaseDeDatos.class primer try");
 					}
 				Connection conn = null;//Declaramos la conexión:
 				try {conn = DriverManager.getConnection("jdbc:sqlite:" + ruta);}//Aquí se obtiene la conexión:
