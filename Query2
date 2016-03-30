@@ -1,0 +1,186 @@
+package modelo;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+
+public class Query2 
+	{
+		private String nameDataBase="TonyK6.db";
+		private static BaseDeDatos base=new BaseDeDatos();
+		Connection c;
+		java.sql.Statement stmt;
+		java.sql.ResultSet rs;
+		private ArrayList<Plato> platos;
+		private ArrayList<Ingrediente> insumos;
+		private ArrayList<Integer>idIngredientes;//Array par almacenar los id de los ingredientes de un plato
+	
+		public Query2(){c=null;stmt=null;rs=null;platos= new ArrayList<Plato>();insumos= new ArrayList<Ingrediente>();idIngredientes= new ArrayList<Integer>();}
+		/**Consulta los nombres de  los platos de la BD  y los almacena en el array platos*/
+		public void getModeloPlatos() 
+			{
+				try
+					{
+						c=base.conectarA(nameDataBase);
+						stmt = c.createStatement();
+						rs = stmt.executeQuery( "SELECT * FROM Platos;" );
+						while(rs.next())
+							{
+								String  nombre = rs.getString("Nombre");
+								int id= rs.getInt("Id");
+								int servi= rs.getInt("Servicios");
+								//double total= rs.getFloat("Total");
+								platos.add((new Plato(id,servi,nombre)));
+							}
+						stmt.close();
+						c.close();
+					}
+				catch(SQLException g){g.printStackTrace();}//Fin del catch
+			}//Fin   del metodo getModelo Platos
+		public ArrayList<Plato> getPlatos() {getModeloPlatos();return platos;}
+		/**Consulta todos los ingredientes de la base y los almacena en el array Insumos*/
+		public void getModelosIngredientes() 
+			{ 	
+				try
+					{
+						c=base.conectarA(nameDataBase);
+						stmt = c.createStatement();
+						rs = stmt.executeQuery( "SELECT * FROM Ingredients;" );
+						while(rs.next())
+							{
+								double cantidad= rs.getFloat("Cantidad");
+								String insumo=rs.getString("Nombre");
+								int id=rs.getInt("Id");
+								double totl=rs.getDouble("Total");	
+								insumos.add(new Ingrediente(id,cantidad,insumo,totl));
+							}
+						stmt.close();
+						c.close();
+					}
+				catch(SQLException g){g.printStackTrace();}//Fin del catch
+			}
+		public ArrayList<Ingrediente> getInsumos() {getModelosIngredientes();return insumos;}
+		/**Este metodo busca todos los ingredientes de un plato y retorna sus valores*/
+		private void setIdIngredientes(int idPlatoSelected) 
+			{
+				idIngredientes.clear();
+				try
+					{
+						c=base.conectarA(nameDataBase);
+						stmt = c.createStatement();
+						rs = stmt.executeQuery( "SELECT * FROM PlatoIngredientes;");
+						while(rs.next())
+							{	
+								int ser= rs.getInt("Ingrediente");//Retorna el entero correspondiente al ingrediente
+								int ta= rs.getInt("Plato");//Retorna el entero correspondiente al ingrediente
+								int id=rs.getInt("Id");
+								if(ta==idPlatoSelected){idIngredientes.add(ser);}
+							}//Fin del while
+						stmt.close();
+						c.close();	
+					}//Fin del Try
+				catch(SQLException g){g.printStackTrace();}
+			}//Fin del metodo getModelos(int):DefaultListModel
+		public ArrayList<Integer> getIngredientes(int idPlatoSelected ) { setIdIngredientes(idPlatoSelected);return idIngredientes;}
+		private void borrarRelacion(int idPlato, int idIngrediente)
+		{
+			try
+				{
+					c=base.conectarA(nameDataBase);
+					stmt = c.createStatement();
+					stmt.executeQuery( "DELETE  FROM PlatoIngredientes WHERE Plato='"+idPlato+"'AND Ingrediente='"+idIngrediente+"';" );
+					System.out.println("Un ingrediente ha sido borrado");
+					stmt.close();
+					c.close();
+				}//Fin del Try
+			catch(SQLException g){g.printStackTrace();}
+		
+		}	
+		private void showRelaciones()
+			{
+				try
+					{
+						c=base.conectarA(nameDataBase);
+						stmt = c.createStatement();
+						rs = stmt.executeQuery( "SELECT * FROM  PlatoIngredientes;" );
+						while(rs.next())
+							{
+								int id= rs.getInt("Id");
+								int pla=rs.getInt("Plato");
+								int ingre=rs.getInt("Ingrediente");
+								System.out.print(id+"\t"+pla+"\t"+ingre+"\n");
+							}//Fin del While
+						stmt.close();
+						c.close();
+					}//Fin del Try
+				catch(SQLException g){g.printStackTrace();}//Fin del catch
+			}//Fin del metodo showRelaciones
+		public  void addRelacionPlatoIngredientes(int idplato,int idingrediente)
+			{
+				try
+					{
+						c=base.conectarA(nameDataBase);
+						stmt = c.createStatement();
+						String sql2 = "INSERT INTO  PlatoIngredientes " +
+							"VALUES (null," +idplato+   ","+idingrediente+");";
+						stmt.executeUpdate(sql2);
+						stmt.close();
+						c.close();
+					}
+				catch(SQLException g){g.printStackTrace();}
+			}
+		private void showPlatos() 
+			{
+				try{	c=base.conectarA(nameDataBase);
+						stmt = c.createStatement();
+						rs = stmt.executeQuery( "SELECT * FROM Platos;" );
+						while(rs.next())
+							{
+								String  nombre = rs.getString("Nombre");
+								int id= rs.getInt("Id");
+								int servi= rs.getInt("Servicios");
+								double total= rs.getFloat("Total");
+								System.out.print(id+"\t"+servi+"\t"+nombre+"\t"+total+"\n");
+							}//Fin del While
+						stmt.close();
+						c.close();
+				}//Fin del Try
+				catch(SQLException g){g.printStackTrace();}//Fin del catch	
+			}//Fin del metodo show Platos
+		public  void showIngredientes()
+			{
+				try{	
+						c=base.conectarA(nameDataBase);
+						stmt = c.createStatement();
+						rs = stmt.executeQuery( "SELECT * FROM Ingredients;" );
+						while(rs.next())
+							{
+									//String  nombre = rs.getString("Nombre");
+									int id= rs.getInt("Id");
+									double cantidad= rs.getFloat("Cantidad");
+									String unidad=rs.getString("Unidad");
+									String insumo=rs.getString("Nombre");
+									//int alimento= rs.getInt("Alimento");
+									double total=rs.getDouble("Total");
+									System.out.print(id+"\t"+cantidad+"\t"+unidad+"\t"+insumo
+									+"\t"+total+"\n");
+							}
+							stmt.close();
+							c.close();
+				}
+				catch(SQLException g){g.printStackTrace();}
+			}
+		/**Metodo para agregar un insumo con su respectivo precio a la base de datos, recomendación  no usar tildes, o escoja un uft  apropiado*/
+		public  void addInsumo(String nombre, double precio)
+		{
+			boolean flag=true;
+			try{
+					c=base.conectarA("C:\\\\Users\\daruedar\\sqlite\\Tonyk6");stmt = c.createStatement();	rs = stmt.executeQuery( "SELECT Nombre FROM Precios;" );
+					while(rs.next()){String  nombrep = rs.getString("Nombre");if(nombrep.equals(nombre)){JOptionPane.showMessageDialog(null, "Este Producto ya fue ingresado, Edite su precio");flag=false;break;}}/*end While*/
+					if(flag){String sql22 = "INSERT INTO Precios " +"VALUES (null,'" +nombre+  "',"  +precio+ ");"; stmt.executeUpdate(sql22);}stmt.close();c.close();
+				}//Fin del Try
+			catch(SQLException g){g.printStackTrace();}
+		}//Fin del metodo addInsumo
+	}//Fin de la clase Query
